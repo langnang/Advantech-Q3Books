@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "asp.net_core_vue": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:9103",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
