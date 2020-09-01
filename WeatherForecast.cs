@@ -1,6 +1,6 @@
 using System;
 
-namespace asp.net_core_vue
+namespace Q3Books
 {
     public class WeatherForecast
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace asp.net_core_vue.Controllers
+namespace Q3Books.Controllers
 {
     [ApiController]
     [Route("[controller]")]

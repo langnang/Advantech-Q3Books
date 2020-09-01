@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "asp.net_core_vue": {
+    "Q3Books": {
       "commandName": "Project",
       "launchBrowser": false,
       "applicationUrl": "https://localhost:9103",

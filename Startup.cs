@@ -4,8 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Q3Books.DbContexts;
 
-namespace asp.net_core_vue
+namespace Q3Books
 {
     public class Startup
     {
@@ -28,6 +31,9 @@ namespace asp.net_core_vue
                 // configuration.RootPath = "ClientApp/build";
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddControllers();
+
+            services.AddDbContext<SQLiteDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,8 +70,8 @@ namespace asp.net_core_vue
                 if (env.IsDevelopment())
                 {
                     // spa.UseReactDevelopmentServer(npmScript: "start");
-                    spa.UseVueCli(npmScript: "serve", port: 19103);// µ¥ÃüÁî
-                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:19103"); // ¶àÃüÁî
+                    // spa.UseVueCli(npmScript: "serve", port: 19103);// µ¥ÃüÁî
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:19103"); // ¶àÃüÁî
                 }
             });
         }

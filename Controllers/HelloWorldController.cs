@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace asp.net_core_vue.Controllers
+namespace Q3Books.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
