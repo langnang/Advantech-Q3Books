@@ -10,7 +10,7 @@ export default new Vuex.Store({
     booklist: booklist,
     book_filter: {
       page: 1,
-      page_size: 50,
+      page_size: 100,
       id: "",
       name: "",
       price: 0,
@@ -70,6 +70,8 @@ export default new Vuex.Store({
               sessionStorage.setItem("user", job_number);
               location.reload();
             }
+          } else {
+            alert("登录失败，请重试！！");
           }
         })
     },
@@ -84,12 +86,12 @@ export default new Vuex.Store({
         })
     },
     getBooks({ commit }) {
-      api.book.all.then(function (res) {
+      api.book.all().then(function (res) {
         commit("setBooks", res.data.data)
       })
     },
     getUsers({ commit }) {
-      api.user.all.then(function (res) {
+      api.user.all().then(function (res) {
         commit("setUsers", res.data.data)
       })
     },
@@ -112,6 +114,9 @@ export default new Vuex.Store({
     },
     expire(state) {
       return moment(state.config.end_date) < new Date();
+    },
+    maxPrice(state) {
+      return parseFloat(state.config.max_price || 100);
     },
     booklist(state) {
       return state.booklist;
@@ -140,6 +145,10 @@ export default new Vuex.Store({
       })
     },
     booklist_pages(state, getters) {
+      const maxPage = Math.ceil(getters.booklist_computed.length / state.book_filter.page_size);
+      if (maxPage <= state.book_filter.page) {
+        state.book_filter.page = maxPage;
+      }
       return getters.booklist_computed.slice(
         (state.book_filter.page - 1) * state.book_filter.page_size,
         state.book_filter.page * state.book_filter.page_size

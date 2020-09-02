@@ -7,7 +7,7 @@
 			<div
 				v-if="this.$store.state.user.id"
 				style="float:right;line-height:50px;margin-right:100px;"
-			>{{user.organization}} {{user.team_code}} {{user.name}}</div>
+			>{{user.organization}} {{user.team_code}} {{user.job_number}} {{user.name}}</div>
 		</el-menu>
 		<el-button-group style="float:right;margin-top:-55px;" v-if="this.$store.state.user.id">
 			<el-button type="primary" @click="logout">登出</el-button>
@@ -18,7 +18,7 @@
 			:show-close="false"
 			:close-on-press-escape="false"
 			:close-on-click-modal="false"
-			:visible="!this.$store.state.user.id"
+			:visible.sync="dialogVisible"
 		>
 			<el-input v-model="user.job_number" placeholder="请输入工号登录"></el-input>
 			<!-- <span style="color:#F56C6C;" v-if="this.$store.state.user.id">{{message}}</span> -->
@@ -46,9 +46,12 @@
 		},
 		created() {
 			if (sessionStorage.getItem("user")) {
+				this.dialogVisible = false;
 				this.$store.dispatch("login", sessionStorage.getItem("user"));
 				this.$store.dispatch("getConfig");
 				this.$store.dispatch("getShopping", sessionStorage.getItem("user"));
+			} else {
+				this.dialogVisible = true;
 			}
 		},
 		mounted() {},
@@ -61,6 +64,7 @@
 			},
 			logout: function () {
 				sessionStorage.removeItem("user");
+				this.$router.push("/");
 				location.reload();
 			},
 		},

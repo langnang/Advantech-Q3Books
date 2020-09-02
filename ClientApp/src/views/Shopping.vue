@@ -23,7 +23,7 @@
 						title="确定要删除该图书吗？"
 						@onConfirm="confirmDeleteBook(scope.$index, scope.row)"
 					>
-						<el-button type="danger" slot="reference" :disabled="expire">删除</el-button>
+						<el-button size="mini" type="danger" slot="reference" :disabled="expire">删除</el-button>
 					</el-popconfirm>
 				</template>
 			</el-table-column>
@@ -34,7 +34,7 @@
 				type="info"
 				effect="dark"
 				style="font-size:32px;height:52px;line-height:50px;"
-			>定价：{{ sumOfPrice }}</el-tag>
+			>总价：{{ sumOfPrice }}</el-tag>
 			<el-tag
 				type="warning"
 				effect="dark"

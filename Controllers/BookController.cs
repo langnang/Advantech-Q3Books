@@ -109,7 +109,7 @@ namespace Q3Books.Controllers
         [HttpGet("all")]
         public ActionResult<ResponseModel> GetAll()
         {
-            var books = _context.book.ToList();
+            var books = _context.book.OrderBy(book=>book.user).ToList();
             return new ResponseModel
             {
                 status = 200,
