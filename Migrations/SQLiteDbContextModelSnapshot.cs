@@ -22,8 +22,14 @@ namespace Q3Books.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("annotation")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("book")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("custom")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("datetime")
                         .HasColumnType("TEXT");

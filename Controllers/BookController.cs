@@ -33,30 +33,34 @@ namespace Q3Books.Controllers
         [HttpPut("add")]
         public ActionResult<ResponseModel> PutAdd([FromBody] BookModel _book)
         {
-            var exist = _context.book.SingleOrDefault(tb => tb.user == _book.user && tb.book == _book.book);
-            if (exist != null) {
-                return new ResponseModel
-                {
-                    status = 404,
-                    statusText = "failure",
-                };
-            }
+            // var exist = _context.book.SingleOrDefault(tb => tb.user == _book.user && tb.book == _book.book);
+            // if (exist != null) {
+            //    return new ResponseModel
+            //    {
+            //        status = 404,
+            //        statusText = "failure",
+            //    };
+            // }
             _book.datetime = DateTime.Now;
             _context.book.Add(_book);
             if (_context.SaveChanges() > 0)
             {
+                var added = _context.book.SingleOrDefault(tb => tb.user == _book.user && tb.book == _book.book && tb.datetime == _book.datetime);
                 return new ResponseModel
                 {
                     status = 200,
                     statusText = "success",
+                    data = added
                 };
             }
             else
             {
+               
                 return new ResponseModel
                 {
                     status = 404,
                     statusText = "failure",
+                   
                 };
                 
             }
@@ -65,7 +69,7 @@ namespace Q3Books.Controllers
 
         [HttpDelete("delete")]
         public ActionResult<ResponseModel> Delete([FromBody] BookModel _book) {
-            var book = _context.book.SingleOrDefault(tb => tb.user == _book.user && tb.book == _book.book);
+            var book = _context.book.SingleOrDefault(tb => tb.user == _book.user && tb.book == _book.book && tb.ID == _book.ID);
             if (book == null)
             {
                 return new ResponseModel

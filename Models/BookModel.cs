@@ -11,5 +11,8 @@ namespace Q3Books.Models
         public string user { get; set; }
         public string book { get; set; }
         public DateTime datetime { get; set; }
+        public Boolean custom { get; set; }
+
+        public string annotation { get; set; }
     }
 }

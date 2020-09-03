@@ -18,11 +18,17 @@ export default new Vuex.Store({
       price_max: 100,
       discount_min: 0,
       discount_max: 100,
+      group_price: 0,
+      group_price_min: 0,
+      group_price_max: 100,
       type: "",
+      inventory: "",
+      two_grades: "",
+      three_grades: "",
       author: "",
       translator: "",
       isbn: "",
-      version: "",
+      publisher: "",
     },
     config: {},
     user: {},
@@ -99,10 +105,18 @@ export default new Vuex.Store({
       api.book.list(job_number).then(res => {
         if (res.data.status == 200) {
           commit("setShopping", res.data.data.map(v => {
-            return {
-              ...v,
-              _book: getters.book(v.book)
+            if (v.custom) {
+              return {
+                ...v,
+                _book: JSON.parse(v.annotation)
+              }
+            } else {
+              return {
+                ...v,
+                _book: getters.book(v.book)
+              }
             }
+
           }));
         }
       })
@@ -113,7 +127,7 @@ export default new Vuex.Store({
       return parseFloat(state.config.discount || 0.88);
     },
     expire(state) {
-      return moment(state.config.end_date) < new Date();
+      return moment(state.config.end_date || '2020-09-05') < new Date();
     },
     maxPrice(state) {
       return parseFloat(state.config.max_price || 100);
@@ -123,15 +137,23 @@ export default new Vuex.Store({
     },
     sumOfPrice(state) {
       return state.shopping.reduce(function (prev, book) {
-        return prev + book._book.price;
+        if (book.custom) {
+          return prev + book._book.price * 0.69;
+        } else {
+          return prev + book._book.group_price;
+        }
       }, 0)
     },
     sumOfDiscount(state, getters) {
-      return getters.sumOfPrice * 0.88;
+      return (getters.sumOfPrice * 0.88).toFixed(3);
     },
     book() {
       return function (id) {
-        return booklist.filter(book => book.id == id)[0];
+        if (id) {
+          return booklist.filter(book => book.id == id)[0];
+        } else {
+          return {};
+        }
       }
     },
     allBookCart(state) {
@@ -144,31 +166,38 @@ export default new Vuex.Store({
         return result;
       })
     },
+    countCustom(state) {
+      return state.shopping.reduce((prev, v) => {
+        if (v.custom) {
+          prev++;
+        }
+        return prev;
+      }, 0)
+    },
     booklist_pages(state, getters) {
       const maxPage = Math.ceil(getters.booklist_computed.length / state.book_filter.page_size);
       if (maxPage <= state.book_filter.page) {
         state.book_filter.page = maxPage;
+      }
+      if (state.book_filter.page == 0) {
+        state.book_filter.page = 1;
       }
       return getters.booklist_computed.slice(
         (state.book_filter.page - 1) * state.book_filter.page_size,
         state.book_filter.page * state.book_filter.page_size
       );
     },
-    booklist_computed(state, getters) {
+    booklist_computed(state) {
       return state.booklist.filter(function (val) {
         return (
           val.id.toString().indexOf(state.book_filter.id) > -1 &&
           val.name.toString().indexOf(state.book_filter.name) > -1 &&
-          val.price >= state.book_filter.price_min &&
-          val.price <= state.book_filter.price_max &&
-          val.price * getters.discount >= state.book_filter.discount_min &&
-          val.price * getters.discount <= state.book_filter.discount_max &&
-          val.type.toString().indexOf(state.book_filter.type) > -1 &&
+          val.group_price >= state.book_filter.group_price_min &&
+          val.group_price <= state.book_filter.group_price_max &&
+          val.two_grades.toString().indexOf(state.book_filter.two_grades) > -1 &&
           val.author.toString().indexOf(state.book_filter.author) > -1 &&
-          val.translator.toString().indexOf(state.book_filter.translator) >
-          -1 &&
-          val.isbn.toString().indexOf(state.book_filter.isbn) > -1 &&
-          val.version.toString().indexOf(state.book_filter.version) > -1
+          val.publisher.toString().indexOf(state.book_filter.publisher) > -1 &&
+          val.inventory > 0
         );
       });
     },
