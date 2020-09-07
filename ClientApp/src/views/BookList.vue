@@ -8,7 +8,13 @@
 						<!-- <el-input v-model="book_filter.id" size="mini" placeholder="输入关键字搜索" /> -->
 						<span>书号</span>
 					</template>
-					<template slot-scope="scope">{{scope.row.id}}</template>
+					<template slot-scope="scope">
+						<el-link
+							type="primary"
+							target="_blank"
+							:href="'http://product.dangdang.com/'+scope.row.id+'.html'"
+						>{{scope.row.id}}</el-link>
+					</template>
 				</el-table-column>
 				<el-table-column prop="name" label="书名">
 					<template slot="header">
@@ -140,11 +146,11 @@
 				</el-form-item>
 				<el-form-item label="团购价">
 					<el-col :span="11">
-						<el-input type="number" v-model="book_filter.group_price_min"></el-input>
+						<el-input type="number" v-model="book_filter.group_price_min" placeholder="0"></el-input>
 					</el-col>
 					<el-col :span="2">~</el-col>
 					<el-col :span="11">
-						<el-input type="number" v-model="book_filter.group_price_max"></el-input>
+						<el-input type="number" v-model="book_filter.group_price_max" placeholder="100"></el-input>
 					</el-col>
 				</el-form-item>
 				<el-form-item label="折扣价" v-if="false">

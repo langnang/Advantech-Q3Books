@@ -78,6 +78,8 @@ export default new Vuex.Store({
             }
           } else {
             alert("登录失败，请重试！！");
+            sessionStorage.removeItem("user");
+            location.reload();
           }
         })
     },
@@ -192,8 +194,8 @@ export default new Vuex.Store({
         return (
           val.id.toString().indexOf(state.book_filter.id) > -1 &&
           val.name.toString().indexOf(state.book_filter.name) > -1 &&
-          val.group_price >= state.book_filter.group_price_min &&
-          val.group_price <= state.book_filter.group_price_max &&
+          val.group_price >= (state.book_filter.group_price_min || 0) &&
+          val.group_price <= (state.book_filter.group_price_max || 100) &&
           val.two_grades.toString().indexOf(state.book_filter.two_grades) > -1 &&
           val.author.toString().indexOf(state.book_filter.author) > -1 &&
           val.publisher.toString().indexOf(state.book_filter.publisher) > -1 &&

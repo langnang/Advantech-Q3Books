@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Q3Books.DbContexts;
 using Q3Books.Models;
 using Microsoft.AspNetCore.Cors;
+using HtmlAgilityPack;
 
 namespace Q3Books.Controllers
 {
@@ -119,6 +120,53 @@ namespace Q3Books.Controllers
                 status = 200,
                 statusText = "success",
                 data = books
+            };
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ResponseModel> GetInfo(string id) {
+            var book = new BookItemModel {ID = id };
+            var url = "http://product.dangdang.com/" + id + ".html";
+            var html = @url;
+            HtmlWeb web = new HtmlWeb();
+            var htmlDoc = web.Load(html);
+            var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@id='product_info']");
+            if (node == null)
+            {
+                return new ResponseModel
+                {
+                    status = 404,
+                    statusText = "failure",
+                };
+            }
+            var name_node = node.SelectSingleNode("//div[@class='name_info']");
+            var name_info = name_node.SelectSingleNode("//h1");
+            if (name_info != null)
+            {
+                book.name = name_info.Attributes["title"].Value;
+            }
+
+            var author_info = node.SelectSingleNode("//span[@id='author']");
+            if (author_info != null)
+            {
+                book.author = author_info.InnerText.Replace("作者:", "");
+            }
+            var publisher_info = node.SelectSingleNode("//a[@dd_name='出版社']");
+            if (publisher_info != null)
+            {
+                book.publisher = publisher_info.InnerText;
+            }
+
+            var price_info = node.SelectSingleNode("//div[@id='original-price']");
+            if (publisher_info != null)
+            {
+                book.price = float.Parse(price_info.InnerText.Replace("&yen;", ""));
+            }
+            return new ResponseModel
+            {
+                status = 200,
+                statusText = "success",
+                data = book
             };
         }
     }

@@ -2,7 +2,15 @@
 	<div>
 		<p style="color:red;" v-if="false">友情提示：首次线下书单自选，全场优惠限购，20福利点：100元，可选购140元自选书籍！</p>
 		<el-table :data="shopping" height="calc(100vh - 195px)">
-			<el-table-column label="书号" prop="_book.id" width="90"></el-table-column>
+			<el-table-column label="书号" prop="_book.id" width="90">
+				<template slot-scope="scope">
+					<el-link
+						type="primary"
+						target="_blank"
+						:href="'http://product.dangdang.com/'+scope.row._book.id+'.html'"
+					>{{scope.row._book.id}}</el-link>
+				</template>
+			</el-table-column>
 			<el-table-column label="书名" prop="_book.name">
 				<template slot-scope="scope">
 					<span v-if="scope.row.custom">
@@ -52,12 +60,7 @@
 		</el-table>
 		<el-divider></el-divider>
 		<el-button-group>
-			<el-button
-				id="addBookBtn"
-				type="primary"
-				:disabled="expire||countCustom>=2"
-				@click="showCustomBook"
-			>新增自选书</el-button>
+			<el-button id="addBookBtn" type="primary" :disabled="expire" @click="showCustomBook">新增自选书</el-button>
 			<el-button id="sumPriceBtn" type="info">总价：{{ sumOfPrice.toFixed(2) }}</el-button>
 			<el-link
 				id="onlineBtn"
@@ -99,25 +102,28 @@
 		</h1>
 		<el-dialog title="新增自选书" :visible.sync="customBookDialogVisible" @closed="resetBookForm">
 			<el-form :model="book_form" ref="book_form" :rules="rules" label-width="80px">
-				<el-form-item label="链接" prop="id">
-					<el-input v-model="book_form.id">
+				<el-form-item label="链接" prop="link_id">
+					<el-input v-model="book_form.link_id" @input="getBookInfo">
 						<template slot="prepend">http://product.dangdang.com/</template>
 						<template slot="append">.html</template>
 					</el-input>
 				</el-form-item>
+				<el-form-item label="书号" prop="id">
+					<el-input v-model="book_form.id" :readonly="true" :disabled="true"></el-input>
+				</el-form-item>
 				<el-form-item label="书名" prop="name">
-					<el-input v-model="book_form.name"></el-input>
+					<el-input v-model="book_form.name" :readonly="true" :disabled="true"></el-input>
 				</el-form-item>
 				<el-form-item label="作者" prop="author">
-					<el-input v-model="book_form.author"></el-input>
+					<el-input v-model="book_form.author" :readonly="true" :disabled="true"></el-input>
 				</el-form-item>
 				<el-form-item label="出版社" prop="publisher">
-					<el-input v-model="book_form.publisher"></el-input>
+					<el-input v-model="book_form.publisher" :readonly="true" :disabled="true"></el-input>
 				</el-form-item>
 				<el-form-item label="定价" prop="price">
-					<el-input type="number" v-model="book_form.price"></el-input>
+					<el-input v-model="book_form.price" :readonly="true" :disabled="true"></el-input>
 				</el-form-item>
-				<el-button type="primary" @click="confirmAddBook">确认</el-button>
+				<el-button type="primary" @click="confirmAddBook" :disabled="submitBookForm">确认</el-button>
 			</el-form>
 		</el-dialog>
 	</div>
@@ -133,35 +139,21 @@
 				customBookDialogVisible: false,
 				input: "",
 				book_form: {
+					link_id: "",
 					id: "",
 					name: "",
 					author: "",
 					publisher: "",
 					price: "",
 				},
+				submitBookForm: false,
 				rules: {
-					id: [
+					link_id: [
 						{
 							required: true,
-							message: "请输入链接地址",
+							message: "请输入书单号（纯数字），例：29002852",
 							triggle: "blur",
 						},
-					],
-					name: [
-						{ required: true, message: "请输入书名", triggle: "blur" },
-					],
-					author: [
-						{ required: true, message: "请输入作者", triggle: "blur" },
-					],
-					publisher: [
-						{
-							required: true,
-							message: "请输入出版社",
-							triggle: "blur",
-						},
-					],
-					price: [
-						{ required: true, message: "请输入定价", triggle: "blur" },
 					],
 				},
 				form: {
@@ -189,12 +181,14 @@
 					this.book_form = row._book;
 				} else {
 					this.book_form = {
+						link_id: "",
 						id: "",
 						name: "",
 						author: "",
 						publisher: "",
 						price: "",
 					};
+					this.submitBookForm = true;
 				}
 				this.customBookDialogVisible = true;
 			},
@@ -277,6 +271,7 @@
 			},
 			resetBookForm() {
 				this.book_form = {
+					link_id: "",
 					id: "",
 					name: "",
 					author: "",
@@ -284,6 +279,34 @@
 					price: "",
 				};
 				this.$refs["book_form"].resetFields();
+			},
+			getBookInfo(value) {
+				const _this = this;
+				this.$axios.get(`/api/book/${value}`).then(function (res) {
+					if (
+						res.data.data &&
+						res.data.data.id == _this.book_form.link_id
+					) {
+						if (res.data.status == 200) {
+							_this.book_form = { ...res.data.data, link_id: value };
+							_this.submitBookForm = false;
+						} else {
+							_this.book_form.id = "";
+							_this.book_form.name = "";
+							_this.book_form.author = "";
+							_this.book_form.publisher = "";
+							_this.book_form.price = "";
+							_this.submitBookForm = true;
+						}
+					} else {
+						_this.book_form.id = "";
+						_this.book_form.name = "";
+						_this.book_form.author = "";
+						_this.book_form.publisher = "";
+						_this.book_form.price = "";
+						_this.submitBookForm = true;
+					}
+				});
 			},
 		},
 	};

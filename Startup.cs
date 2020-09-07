@@ -7,6 +7,7 @@ using VueCliMiddleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite;
 using Q3Books.DbContexts;
+using System.Text;
 
 namespace Q3Books
 {
@@ -74,6 +75,7 @@ namespace Q3Books
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:19103"); // ¶àÃüÁî
                 }
             });
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
     }
 }

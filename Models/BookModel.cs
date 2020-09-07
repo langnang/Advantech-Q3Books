@@ -15,4 +15,13 @@ namespace Q3Books.Models
 
         public string annotation { get; set; }
     }
+
+    public class BookItemModel
+    {
+        public string ID { get; set; }
+        public string name { get; set; }
+        public string author { get; set; }
+        public string publisher { get; set; }
+        public float price { get; set; }
+    }
 }

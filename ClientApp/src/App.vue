@@ -20,7 +20,9 @@
 			:close-on-click-modal="false"
 			:visible.sync="dialogVisible"
 		>
-			<el-input v-model="user.job_number" placeholder="请输入工号登录"></el-input>
+			<el-input v-model="user.job_number" placeholder="请输入工号登录">
+				<template slot="prepend">C-</template>
+			</el-input>
 			<!-- <span style="color:#F56C6C;" v-if="this.$store.state.user.id">{{message}}</span> -->
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="login">确 定</el-button>
@@ -60,7 +62,7 @@
 		},
 		methods: {
 			login: function () {
-				this.$store.dispatch("login", this.user.job_number);
+				this.$store.dispatch("login", "C-" + this.user.job_number);
 			},
 			logout: function () {
 				sessionStorage.removeItem("user");
