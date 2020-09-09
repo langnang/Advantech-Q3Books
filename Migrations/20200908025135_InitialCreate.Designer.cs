@@ -9,7 +9,7 @@ using Q3Books.DbContexts;
 namespace Q3Books.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    [Migration("20200903023551_InitialCreate")]
+    [Migration("20200908025135_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,12 @@ namespace Q3Books.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("character")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("floor")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("job_number")
                         .HasColumnType("TEXT");

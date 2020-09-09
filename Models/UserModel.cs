@@ -12,5 +12,7 @@ namespace Q3Books.Models
         public string job_number { get; set; }
         public string name { get; set; }
         public string organization { get; set; }
+        public string floor { get; set; }
+        public string character { get; set; }
     }
 }

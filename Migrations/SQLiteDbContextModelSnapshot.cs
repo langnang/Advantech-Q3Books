@@ -68,6 +68,12 @@ namespace Q3Books.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("character")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("floor")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("job_number")
                         .HasColumnType("TEXT");
 

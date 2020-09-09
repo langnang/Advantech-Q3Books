@@ -4,6 +4,10 @@
 			<el-menu-item index="/">首页</el-menu-item>
 			<el-menu-item index="/booklist">书单</el-menu-item>
 			<el-menu-item index="/shopping">我的购物车</el-menu-item>
+			<el-menu-item
+				index="/selectors"
+				v-if="user.character=='floor admin'||user.character=='admin'||user.character=='system admin'"
+			>选书名单</el-menu-item>
 			<div
 				v-if="this.$store.state.user.id"
 				style="float:right;line-height:50px;margin-right:100px;"

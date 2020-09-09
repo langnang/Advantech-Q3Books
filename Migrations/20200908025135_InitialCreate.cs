@@ -48,7 +48,9 @@ namespace Q3Books.Migrations
                     team_code = table.Column<string>(nullable: true),
                     job_number = table.Column<string>(nullable: true),
                     name = table.Column<string>(nullable: true),
-                    organization = table.Column<string>(nullable: true)
+                    organization = table.Column<string>(nullable: true),
+                    floor = table.Column<string>(nullable: true),
+                    character = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

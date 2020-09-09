@@ -22,6 +22,7 @@ namespace Q3Books.Models
         public string name { get; set; }
         public string author { get; set; }
         public string publisher { get; set; }
+        public Boolean ddzy { get; set; }
         public float price { get; set; }
     }
 }

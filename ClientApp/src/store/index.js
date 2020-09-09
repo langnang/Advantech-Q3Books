@@ -103,6 +103,19 @@ export default new Vuex.Store({
         commit("setUsers", res.data.data)
       })
     },
+    getAllBooks({ commit }) {
+      Promise.all([
+        new Promise(function (resolve, reject) {
+          api.book.all().then(resolve).catch(reject)
+        }),
+        new Promise(function (resolve, reject) {
+          api.user.all().then(resolve).catch(reject)
+        })
+      ]).then(function (res) {
+        commit("setBooks", res[0].data.data)
+        commit("setUsers", res[1].data.data)
+      })
+    },
     getShopping({ commit, getters }, job_number) {
       api.book.list(job_number).then(res => {
         if (res.data.status == 200) {
@@ -149,6 +162,17 @@ export default new Vuex.Store({
     sumOfDiscount(state, getters) {
       return (getters.sumOfPrice * 0.88).toFixed(3);
     },
+    sumOfHumanPrice(state, getters) {
+      const result = state.users.map((value) => {
+        value.books = getters.allBookCart.filter(v => v.user == value.job_number);
+        value.sum = value.books.reduce((sum, value) => sum + value._book.group_price, 0)
+        return value;
+      })
+      if (state.user.character == 'floor admin') {
+        return result.filter(v => v.books.length > 0 && v.floor == state.user.floor);
+      }
+      return result.filter(v => v.books.length > 0);
+    },
     book() {
       return function (id) {
         if (id) {
@@ -158,6 +182,13 @@ export default new Vuex.Store({
         }
       }
     },
+    types() {
+      const types = booklist.reduce((array, v) => {
+        array.push(v.two_grades);
+        return array;
+      }, [])
+      return new Set(types);
+    },
     allBookCart(state) {
       return state.books.map(function (value) {
         const result = {
@@ -165,8 +196,20 @@ export default new Vuex.Store({
           _user: state.users.filter(user => user.job_number == value.user)[0],
           _book: state.booklist.filter(book => book.id == value.book)[0]
         };
+        if (value.custom) {
+          result._book = JSON.parse(value.annotation);
+        }
         return result;
       })
+    },
+    allFloorBookCart(state, getters) {
+      return function (floor) {
+        if (floor) {
+          return getters.allBookCart.filter(v => v._user.floor == floor);
+        } else {
+          return getters.allBookCart;
+        }
+      }
     },
     countCustom(state) {
       return state.shopping.reduce((prev, v) => {

@@ -146,6 +146,15 @@ namespace Q3Books.Controllers
                 book.name = name_info.Attributes["title"].Value;
             }
 
+            var ddzy_info = name_node.SelectSingleNode("//img[@class='icon_name']");
+            if (ddzy_info != null)
+            {
+                book.ddzy = true;
+            }
+            else
+            {
+                book.ddzy = false;
+            }
             var author_info = node.SelectSingleNode("//span[@id='author']");
             if (author_info != null)
             {
@@ -158,7 +167,7 @@ namespace Q3Books.Controllers
             }
 
             var price_info = node.SelectSingleNode("//div[@id='original-price']");
-            if (publisher_info != null)
+            if (price_info != null)
             {
                 book.price = float.Parse(price_info.InnerText.Replace("&yen;", ""));
             }

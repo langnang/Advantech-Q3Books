@@ -163,7 +163,9 @@
 					</el-col>
 				</el-form-item>
 				<el-form-item label="分类">
-					<el-input v-model="book_filter.two_grades" :clearable="true"></el-input>
+					<el-select v-model="book_filter.two_grades" placeholder="请选择" style="width:100%;">
+						<el-option v-for="item in types" :key="item" :label="item" :value="item"></el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item label="作者">
 					<el-input v-model="book_filter.author" :clearable="true"></el-input>
@@ -202,6 +204,7 @@
 				"booklist_computed",
 				"booklist_pages",
 				"sumOfPrice",
+				"types",
 			]),
 		},
 		methods: {

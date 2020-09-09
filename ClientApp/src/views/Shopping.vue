@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<p style="color:red;" v-if="false">友情提示：首次线下书单自选，全场优惠限购，20福利点：100元，可选购140元自选书籍！</p>
-		<el-table :data="shopping" height="calc(100vh - 195px)">
+		<p style="color:red;">友情提醒：请在9月10日（本周四）17:00前完成书箱（仅限当当自营）选购，过期系统将自动锁定，无法编辑，谢谢！</p>
+		<el-table :data="shopping" height="calc(100vh - 240px)">
 			<el-table-column label="书号" prop="_book.id" width="90">
 				<template slot-scope="scope">
 					<el-link
@@ -14,7 +14,8 @@
 			<el-table-column label="书名" prop="_book.name">
 				<template slot-scope="scope">
 					<span v-if="scope.row.custom">
-						<el-tag size="medium" type="success" effect="dark">自选</el-tag>
+						<el-tag size="medium" type="success" effect="dark" v-if="scope.row.book<100000000">自营</el-tag>
+						<el-tag size="medium" type="danger" effect="dark" v-else>非自营</el-tag>
 						{{scope.row._book.name}}
 					</span>
 					<span v-else>{{scope.row._book.name}}</span>
@@ -68,8 +69,19 @@
 				target="_blank"
 				:underline="false"
 				href="http://book.dangdang.com/"
+				v-if="false"
 			>
 				<span>在线选书</span>
+			</el-link>
+			<el-link
+				id="onlineBtn"
+				class="el-button el-button--danger is-plain"
+				target="_blank"
+				:underline="false"
+				href="http://book.dangdang.com/"
+				style="padding:0;border:1px;height:61px;"
+			>
+				<img src="./../assets/dangdang.png" />
 			</el-link>
 		</el-button-group>
 		<h1 v-if="false">
@@ -98,6 +110,15 @@
 				style
 			>
 				<el-tag type="danger" effect="plain" style="font-size:32px;height:55px;line-height:55px;">在线选书</el-tag>
+			</el-link>
+			<el-link
+				type="primary"
+				target="_blank"
+				:underline="false"
+				href="http://book.dangdang.com/"
+				style
+			>
+				<img src="<%= BASE_URL %>dangdang.png" />
 			</el-link>
 		</h1>
 		<el-dialog title="新增自选书" :visible.sync="customBookDialogVisible" @closed="resetBookForm">
@@ -222,7 +243,11 @@
 				let _this = this;
 				this.$refs.book_form.validate((valid) => {
 					if (valid) {
-						if (
+						if (!_this.book_form.ddzy) {
+							alert(
+								"添加失败：所选书籍并非当当自营，请重新选择书籍！！！"
+							);
+						} else if (
 							_this.sumOfPrice + _this.book_form.price * 0.69 >
 							_this.maxPrice
 						) {
