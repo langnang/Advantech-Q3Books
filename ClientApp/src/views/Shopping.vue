@@ -14,7 +14,7 @@
 			<el-table-column label="书名" prop="_book.name">
 				<template slot-scope="scope">
 					<span v-if="scope.row.custom">
-						<el-tag size="medium" type="success" effect="dark" v-if="scope.row.book<100000000">自营</el-tag>
+						<el-tag size="medium" type="success" effect="dark" v-if="scope.row.book<1000000000">自营</el-tag>
 						<el-tag size="medium" type="danger" effect="dark" v-else>非自营</el-tag>
 						{{scope.row._book.name}}
 					</span>
