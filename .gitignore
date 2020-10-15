@@ -234,3 +234,4 @@ _Pvt_Extensions
 /Properties/PublishProfiles
 /ClientApp/package-lock.json
 /.idea
+/.vscode
